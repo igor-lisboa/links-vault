@@ -11,14 +11,17 @@ const routes = [
   {
     path: '',
     name: 'home',
-    component: Home
+    component: Home,
+    meta: {
+      middleware: ['auth']
+    }
   },
   {
     path: '/register',
     name: 'register',
     component: () => import('../views/Register.vue'),
     meta: {
-      public: true
+      middleware: ['check_auth']
     }
   },
   {
@@ -26,7 +29,14 @@ const routes = [
     name: 'login',
     component: Login,
     meta: {
-      public: true
+      middleware: ['check_auth']
+    }
+  },
+  {
+    path: '*',
+    redirect: { name: 'home' },
+    meta: {
+      middleware: ['check_auth']
     }
   }
 ]
@@ -37,12 +47,25 @@ const router = new VueRouter({
 })
 
 router.beforeEach((routeTo, routeFrom, next) => {
-  if (!routeTo.meta.public && !store.state.user.token) {
-    next({
-      name: 'login'
-    })
-  } else {
-    next()
+  const user_token = store.state?.user?.token
+  const routeTo_middleware = routeTo.meta.middleware
+
+  if (routeTo_middleware.includes("auth")) {
+    if (user_token === undefined || user_token === null) {
+      next({
+        name: 'login'
+      })
+    } else {
+      next()
+    }
+  } else if (routeTo_middleware.includes("check_auth")) {
+    if (user_token !== undefined && user_token !== null) {
+      next({
+        name: 'home'
+      })
+    } else {
+      next()
+    }
   }
 })
 

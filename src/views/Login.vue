@@ -8,7 +8,12 @@
       </div>
       <div class="form-group">
         <label for="senha">Senha</label>
-        <input type="password" class="form-control" autocomplete v-model="user.password" />
+        <input
+          type="password"
+          class="form-control"
+          autocomplete
+          v-model="user.password"
+        />
       </div>
       <p class="alert alert-danger" v-if="msg">{{ msg }}</p>
       <button type="submit" class="btn btn-primary brn-block">Logar</button>

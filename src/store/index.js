@@ -22,7 +22,7 @@ const actions = {
         try {
             const response = await apiLinksUsers.login(user.email, user.password)
             commit('SET_LOGGED_USER', {
-                user: response.data.user
+                user: response.data.data.user
             })
             return response
         } catch (e) {

@@ -8,7 +8,7 @@
       </div>
       <div class="form-group">
         <label for="senha">Senha</label>
-        <input type="password" class="form-control" v-model="user.password" />
+        <input type="password" class="form-control" autocomplete v-model="user.password" />
       </div>
       <p class="alert alert-danger" v-if="msg">{{ msg }}</p>
       <button type="submit" class="btn btn-primary brn-block">Logar</button>
@@ -31,7 +31,10 @@ export default {
     login() {
       this.$store
         .dispatch("login", this.user)
-        .then(() => this.$router.push({ name: "home" }))
+        .then(() => {
+          this.msg = "";
+          this.$router.push({ name: "home" });
+        })
         .catch((err) => {
           if (err) {
             this.msg = "Credenciais inválidas!";

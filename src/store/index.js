@@ -27,7 +27,7 @@ const actions = {
             return response
         } catch (e) {
             console.log(e)
-            return null
+            throw e
         }
     },
     async logout({ commit }) {
@@ -37,7 +37,7 @@ const actions = {
             return response
         } catch (e) {
             console.log(e)
-            return null
+            throw e
         }
     }
 }

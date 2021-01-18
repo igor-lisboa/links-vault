@@ -48,7 +48,7 @@ const router = new VueRouter({
 
 router.beforeEach((routeTo, routeFrom, next) => {
   const user_token = store.state?.user?.token
-  const routeTo_middleware = routeTo.meta.middleware
+  const routeTo_middleware = routeTo.meta?.middleware ?? []
 
   if (routeTo_middleware.includes("auth")) {
     if (user_token === undefined || user_token === null) {
@@ -66,6 +66,8 @@ router.beforeEach((routeTo, routeFrom, next) => {
     } else {
       next()
     }
+  } else {
+    next()
   }
 })
 

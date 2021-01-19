@@ -33,6 +33,14 @@ const routes = [
     }
   },
   {
+    path: '/categories',
+    name: 'categories',
+    component: () => import('../views/Categories.vue'),
+    meta: {
+      middleware: ['auth']
+    }
+  },
+  {
     path: '*',
     redirect: { name: 'home' },
     meta: {

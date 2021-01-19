@@ -3,10 +3,13 @@
     <header>
       <!-- Fixed navbar -->
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a href="#" class="navbar-brand d-flex align-items-center">
+        <router-link
+          class="navbar-brand d-flex align-items-center"
+          :to="{ name: 'home' }"
+        >
           <i class="fa fa-link mr-2"></i>
           <strong>LINKS Vault</strong>
-        </a>
+        </router-link>
         <button
           class="navbar-toggler"
           type="button"
@@ -20,12 +23,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
+            <nav-router-link routeName="home" routeLabel="Home" />
+            <nav-router-link routeName="categories" routeLabel="Categorias" />
           </ul>
         </div>
       </nav>
@@ -40,6 +39,15 @@
     </footer>
   </div>
 </template>
+<script>
+import NavRouterLink from "@/components/NavRouterLink.vue";
+
+export default {
+  components: {
+    NavRouterLink,
+  },
+};
+</script>
 <style scoped>
 main[role="main"].container.py-5 {
   margin-top: 56px;

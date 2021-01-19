@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'font-awesome/css/font-awesome.css'
 import store from './store'
 
 Vue.config.productionTip = false

@@ -15,7 +15,6 @@
           v-model="user.password"
         />
       </div>
-      <p class="alert alert-danger" v-if="msg">{{ msg }}</p>
       <button type="submit" class="btn btn-primary brn-block">Logar</button>
       <router-link :to="{ name: 'register' }"
         >Não possui um cadastro, cadastre-se aqui!</router-link
@@ -25,26 +24,35 @@
 </template>
 
 <script>
+import apiUser from "./../services/apiLinks/users.js";
 export default {
   data() {
     return {
       user: {},
-      msg: "",
     };
   },
   methods: {
-    login() {
-      this.$store
-        .dispatch("login", this.user)
-        .then(() => {
-          this.msg = "";
-          this.$router.push({ name: "home" });
-        })
-        .catch((err) => {
-          if (err) {
-            this.msg = "Credenciais inválidas!";
-          }
-        });
+    async login() {
+      try {
+        const response = await apiUser.login(
+          this.user.email,
+          this.user.password
+        );
+        this.$store
+          .dispatch("login", response.data.data.user)
+          .then(() => {
+            this.$router.push({ name: "home" });
+          })
+          .catch((err) => {
+            if (err) {
+              throw err;
+            }
+          });
+      } catch (e) {
+        if (e) {
+          this.$swal.fire("Login", "Credenciais inválidas", "error");
+        }
+      }
     },
   },
 };

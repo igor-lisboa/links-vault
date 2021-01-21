@@ -1,30 +1,36 @@
 <template>
-  <div class="container">
-    <h1>Login</h1>
-    <form @submit.prevent="login">
-      <div class="form-group">
-        <label for="email">E-mail</label>
-        <input type="email" class="form-control" v-model="user.email" />
+  <div class="container h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+      <div class="col-md-6">
+        <h1>Login</h1>
+        <form @submit.prevent="login">
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" class="form-control" v-model="user.email" />
+          </div>
+          <div class="form-group">
+            <label for="senha">Senha</label>
+            <input
+              type="password"
+              class="form-control"
+              autocomplete
+              v-model="user.password"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            Entrar
+          </button>
+          <router-link :to="{ name: 'register' }">
+            Não possui um cadastro, cadastre-se aqui!
+          </router-link>
+        </form>
       </div>
-      <div class="form-group">
-        <label for="senha">Senha</label>
-        <input
-          type="password"
-          class="form-control"
-          autocomplete
-          v-model="user.password"
-        />
-      </div>
-      <button type="submit" class="btn btn-primary brn-block">Logar</button>
-      <router-link :to="{ name: 'register' }"
-        >Não possui um cadastro, cadastre-se aqui!</router-link
-      >
-    </form>
+    </div>
   </div>
 </template>
 
 <script>
-import apiUser from "./../services/apiLinks/users.js";
+import apiUser from "@/services/apiLinks/users.js";
 export default {
   data() {
     return {

@@ -58,19 +58,34 @@ router.beforeEach((routeTo, routeFrom, next) => {
   const user_token = store.state?.user?.token
   const routeTo_middleware = routeTo.meta?.middleware ?? []
 
+  let nextRoute = null
+  if (routeFrom.name) {
+    nextRoute = routeFrom
+  }
+
   if (routeTo_middleware.includes("auth")) {
     if (user_token === undefined || user_token === null) {
-      next({
-        name: 'login'
-      })
+
+      if (nextRoute === null) {
+        nextRoute = {
+          name: 'login'
+        }
+      }
+
+      next(nextRoute)
     } else {
       next()
     }
   } else if (routeTo_middleware.includes("check_auth")) {
     if (user_token !== undefined && user_token !== null) {
-      next({
-        name: 'home'
-      })
+
+      if (nextRoute == null) {
+        nextRoute = {
+          name: 'home'
+        }
+      }
+
+      next(nextRoute)
     } else {
       next()
     }

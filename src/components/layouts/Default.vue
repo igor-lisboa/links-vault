@@ -26,6 +26,32 @@
             <nav-router-link routeName="home" routeLabel="Home" />
             <nav-router-link routeName="categories" routeLabel="Categorias" />
           </ul>
+          <ul class="navbar-nav">
+            <li v-if="$store.getters.loggedUser" class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                {{ $store.state.user.email }}
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-right"
+                aria-labelledby="navbarDropdown"
+              >
+                <a class="dropdown-item" href="#">Seu Cadastro</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" @click.prevent="logout" href="#"
+                  >Sair</a
+                >
+              </div>
+            </li>
+            <nav-router-link v-else routeName="login" routeLabel="Login" />
+          </ul>
         </div>
       </nav>
     </header>
@@ -41,10 +67,31 @@
 </template>
 <script>
 import NavRouterLink from "@/components/NavRouterLink.vue";
+import apiUser from "@/services/apiLinks/users.js";
 
 export default {
   components: {
     NavRouterLink,
+  },
+  methods: {
+    async logout() {
+      try {
+        await apiUser.logout();
+      } catch (e) {
+        console.log(e);
+      }
+
+      this.$store
+        .dispatch("logout")
+        .then(() => {
+          this.$router.push({ name: "login" });
+        })
+        .catch((err) => {
+          if (err) {
+            throw err;
+          }
+        });
+    },
   },
 };
 </script>

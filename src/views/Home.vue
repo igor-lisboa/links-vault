@@ -53,6 +53,7 @@ export default {
   },
   methods: {
     async getCategoryLinks() {
+      this.loading = true;
       const response = await apiCategory.links().catch(function (error) {
         if (error.response) {
           return error.response;
@@ -68,6 +69,7 @@ export default {
       }
 
       this.categoriesLinks = response.data.data.categories_links;
+      this.loading = false;
     },
   },
 };

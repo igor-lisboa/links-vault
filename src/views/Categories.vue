@@ -95,14 +95,20 @@ export default {
             return error.response;
           }
         });
+
       this.toogleInserting();
-      if (response.data.success) {
-        this.$swal.fire(this.pageName, response.data.message, "success");
-        await this.loadCategories();
-      }
+
       if (response.status === 401) {
         this.forceLogout();
       }
+
+      if (response.data.success) {
+        this.$swal.fire(this.pageName, response.data.message, "success");
+      } else {
+        this.$swal.fire(this.pageName, response.data.message, "error");
+      }
+
+      await this.loadCategories();
     },
     forceLogout() {
       this.$store.dispatch("logout").then(() => {

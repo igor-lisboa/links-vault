@@ -1,59 +1,54 @@
 <template>
   <div>
     <header>
-      <!-- Fixed navbar -->
-      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <router-link
-          class="navbar-brand d-flex align-items-center"
-          :to="{ name: 'home' }"
-        >
+      <b-navbar toggleable="md" type="dark" variant="info" class="fixed-top">
+        <b-navbar-brand :to="{ name: 'home' }">
           <i class="fa fa-link mr-2"></i>
-          <strong>LINKS Vault</strong>
-        </router-link>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarCollapse"
-          aria-controls="navbarCollapse"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav mr-auto">
-            <nav-router-link routeName="home" routeLabel="Home" />
-            <nav-router-link routeName="categories" routeLabel="Categorias" />
-          </ul>
-          <ul class="navbar-nav">
-            <li v-if="$store.getters.loggedUser" class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="navbarDropdown"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                {{ $store.state.user.email }}
-              </a>
-              <div
-                class="dropdown-menu dropdown-menu-right"
-                aria-labelledby="navbarDropdown"
-              >
-                <a class="dropdown-item" href="#">Seu Cadastro</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" @click.prevent="logout" href="#"
-                  >Sair</a
-                >
-              </div>
-            </li>
-            <nav-router-link v-else routeName="login" routeLabel="Login" />
-          </ul>
-        </div>
-      </nav>
+          LINKS <strong>Vault</strong>
+        </b-navbar-brand>
+
+        <b-navbar-toggle target="nav-collapse">
+          <template #default="{ expanded }">
+            <i class="fa fa-times" v-if="expanded"></i>
+            <i class="fa fa-bars" v-else></i>
+          </template>
+        </b-navbar-toggle>
+
+        <b-collapse id="nav-collapse" is-nav>
+          <b-navbar-nav>
+            <b-nav-item :active="$route.name === 'home'" :to="{ name: 'home' }">
+              Home
+            </b-nav-item>
+            <b-nav-item
+              :active="$route.name === 'categories'"
+              :to="{ name: 'categories' }"
+            >
+              Categorias
+            </b-nav-item>
+          </b-navbar-nav>
+
+          <!-- Right aligned nav items -->
+          <b-navbar-nav class="ml-auto">
+            <b-nav-item-dropdown right v-if="$store.getters.loggedUser">
+              <!-- Using 'button-content' slot -->
+              <template #button-content>
+                <em>{{ $store.state.user.email }}</em>
+              </template>
+              <b-dropdown-item href="#">Seus Dados</b-dropdown-item>
+              <div class="dropdown-divider"></div>
+              <b-dropdown-item href="#" @click.prevent="logout">
+                Sair
+              </b-dropdown-item>
+            </b-nav-item-dropdown>
+            <b-nav-item
+              :active="$route.name === 'login'"
+              :to="{ name: 'login' }"
+              v-else
+              >Login</b-nav-item
+            >
+          </b-navbar-nav>
+        </b-collapse>
+      </b-navbar>
     </header>
     <main role="main" class="container py-5">
       <slot></slot>
@@ -66,29 +61,47 @@
   </div>
 </template>
 <script>
-import NavRouterLink from "@/components/NavRouterLink.vue";
 import apiUser from "@/services/apiLinks/users.js";
 
 export default {
-  components: {
-    NavRouterLink,
-  },
   methods: {
-    async logout() {
-      try {
-        await apiUser.logout();
-      } catch (e) {
-        console.log(e);
-      }
-
-      this.$store
-        .dispatch("logout")
-        .then(() => {
-          this.$router.push({ name: "login" });
+    logout() {
+      this.$swal
+        .fire({
+          title: "Logout",
+          text: "Tem certeza que deseja realizar o logout?",
+          showCancelButton: true,
+          confirmButtonText: "Sim",
+          cancelButtonText: "Cancelar",
+          icon: "warning",
         })
-        .catch((err) => {
-          if (err) {
-            throw err;
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              try {
+                await apiUser.logout();
+              } catch (e) {
+                console.log(e);
+              }
+              this.$store
+                .dispatch("logout")
+                .then(() => {
+                  this.$swal.fire(
+                    "Logout",
+                    "Logout realizado com sucesso",
+                    "success"
+                  );
+                  this.$router.push({ name: "login" });
+                })
+                .catch((err) => {
+                  if (err) {
+                    throw err;
+                  }
+                });
+            } catch (ex) {
+              console.log(ex);
+              this.$swal.fire("Logout", "Falha ao realizar logout", "error");
+            }
           }
         });
     },

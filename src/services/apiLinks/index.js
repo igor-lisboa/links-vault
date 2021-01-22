@@ -2,12 +2,10 @@ import axios from 'axios'
 import store from '../../store'
 
 export default () => {
-    const userToken = store.state?.user?.token
-    const api = axios.create({
+    return axios.create({
         baseURL: process.env.VUE_APP_API_LINKS_URL,
         headers: {
-            Authorization: userToken
+            Authorization: store.state?.user?.token
         }
     })
-    return api
 }

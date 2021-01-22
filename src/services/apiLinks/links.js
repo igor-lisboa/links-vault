@@ -2,14 +2,12 @@ import getApi from './index';
 
 export default {
     store(categoryId, link) {
-        const api = getApi()
-        return api.post('/links', {
+        return getApi().post('/links', {
             category_id: categoryId,
             link
         })
     },
     delete(linkId) {
-        const api = getApi()
-        return api.delete('/links/' + linkId)
+        return getApi().delete('/links/' + linkId)
     }
 }

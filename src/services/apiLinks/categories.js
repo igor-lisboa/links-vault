@@ -2,21 +2,17 @@ import getApi from './index';
 
 export default {
     index() {
-        const api = getApi()
-        return api.get('/categories')
+        return getApi().get('/categories')
     },
     links() {
-        const api = getApi()
-        return api.get('/categories/links')
+        return getApi().get('/categories/links')
     },
     store(name) {
-        const api = getApi()
-        return api.post('/categories', {
+        return getApi().post('/categories', {
             name
         })
     },
     delete(categoryId) {
-        const api = getApi()
-        return api.delete('/categories/' + categoryId)
+        return getApi().delete('/categories/' + categoryId)
     }
 }

@@ -8,50 +8,27 @@
         </div>
       </div>
       <div class="accordion" role="tablist" v-else>
-        <b-card no-body class="mb-1">
+        <b-card
+          v-for="(category, index) in categoriesLinks"
+          :key="index"
+          no-body
+          class="mb-1"
+        >
           <b-card-header header-tag="header" class="p-1" role="tab">
-            <b-button block v-b-toggle.accordion-1 variant="info"
-              >Accordion 1</b-button
-            >
+            <b-button block v-b-toggle="`accordion-${index}`" variant="info">
+              {{ category.name }}
+            </b-button>
           </b-card-header>
           <b-collapse
-            id="accordion-1"
-            visible
-            accordion="my-accordion"
+            :id="`accordion-${index}`"
+            :visible="index === 0"
+            accordion="accordion-categories"
             role="tabpanel"
           >
             <b-card-body>
-              <b-card-text>
-                I start opened because <code>visible</code> is
-                <code>true</code>
-              </b-card-text>
-              <b-card-text>{{ text }}</b-card-text>
-            </b-card-body>
-          </b-collapse>
-        </b-card>
-
-        <b-card no-body class="mb-1">
-          <b-card-header header-tag="header" class="p-1" role="tab">
-            <b-button block v-b-toggle.accordion-2 variant="info"
-              >Accordion 2</b-button
-            >
-          </b-card-header>
-          <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
-            <b-card-body>
-              <b-card-text>{{ text }}</b-card-text>
-            </b-card-body>
-          </b-collapse>
-        </b-card>
-
-        <b-card no-body class="mb-1">
-          <b-card-header header-tag="header" class="p-1" role="tab">
-            <b-button block v-b-toggle.accordion-3 variant="info"
-              >Accordion 3</b-button
-            >
-          </b-card-header>
-          <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
-            <b-card-body>
-              <b-card-text>{{ text }}</b-card-text>
+              <div v-for="link in category.links" :key="link.id">
+                {{ link.id }}
+              </div>
             </b-card-body>
           </b-collapse>
         </b-card>
@@ -68,7 +45,6 @@ export default {
     return {
       loading: false,
       categoriesLinks: {},
-      text: "te",
       pageName: "Home",
     };
   },
@@ -91,7 +67,7 @@ export default {
         this.$swal.fire(this.pageName, response.data.message, "error");
       }
 
-      this.categoriesLinks = response.data.categories_links;
+      this.categoriesLinks = response.data.data.categories_links;
     },
   },
 };

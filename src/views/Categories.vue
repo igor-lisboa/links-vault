@@ -34,7 +34,7 @@
               type="text"
               class="form-control mr-2"
               v-model="category"
-              placeholder="Digite aqui uma nova categoria"
+              placeholder="Nova categoria"
               autofocus
               required
             />

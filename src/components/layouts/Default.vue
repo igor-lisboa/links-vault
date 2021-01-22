@@ -78,17 +78,19 @@ export default {
         .then(async (result) => {
           if (result.isConfirmed) {
             try {
-              try {
-                await apiUser.logout();
-              } catch (e) {
-                console.log(e);
-              }
+              const response = await apiUser.logout().catch(function (error) {
+                if (error.response) {
+                  return error.response;
+                }
+              });
               this.$store
                 .dispatch("logout")
                 .then(() => {
                   this.$swal.fire(
                     "Logout",
-                    "Logout realizado com sucesso",
+                    response.data.success
+                      ? response.data.message
+                      : "Logout realizado com sucesso.",
                     "success"
                   );
                   this.$router.push({ name: "login" });

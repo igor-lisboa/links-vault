@@ -6,7 +6,15 @@
         <form @submit.prevent="login">
           <div class="form-group">
             <label for="email">E-mail</label>
-            <input type="email" id="email" class="form-control" v-model="user.email" autofocus autocomplete />
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              v-model="user.email"
+              autofocus
+              autocomplete
+              required
+            />
           </div>
           <div class="form-group">
             <label for="senha">Senha</label>
@@ -15,6 +23,7 @@
               type="password"
               class="form-control"
               autocomplete
+              required
               v-model="user.password"
             />
           </div>

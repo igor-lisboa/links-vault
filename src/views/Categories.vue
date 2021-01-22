@@ -64,7 +64,9 @@
 </template>
 <script>
 import apiCategory from "@/services/apiLinks/categories.js";
+import mixinForceLogout from "@/mixins/forceLogout.js";
 export default {
+  mixins: [mixinForceLogout],
   data() {
     return {
       pageName: "Categorias",
@@ -99,22 +101,16 @@ export default {
       this.toogleInserting();
 
       if (response.status === 401) {
-        this.forceLogout();
+        this.forceLogout(this.pageName);
       }
 
-      if (response.data.success) {
-        this.$swal.fire(this.pageName, response.data.message, "success");
-      } else {
-        this.$swal.fire(this.pageName, response.data.message, "error");
-      }
+      this.$swal.fire(
+        this.pageName,
+        response.data.message,
+        response.data.success ? "success" : "error"
+      );
 
       await this.loadCategories();
-    },
-    forceLogout() {
-      this.$store.dispatch("logout").then(() => {
-        this.$swal.fire(this.pageName, "Seu acesso expirou", "warning");
-        this.$router.push({ name: "login" });
-      });
     },
     async deleteCategory(category) {
       this.$swal
@@ -135,12 +131,18 @@ export default {
                   return error.response;
                 }
               });
-            if (response.data.success) {
-              await this.loadCategories();
-            }
+
             if (response.status === 401) {
-              this.forceLogout();
+              this.forceLogout(this.pageName);
             }
+
+            this.$swal.fire(
+              this.pageName,
+              response.data.message,
+              response.data.success ? "success" : "error"
+            );
+
+            await this.loadCategories();
           }
         });
     },
@@ -152,11 +154,15 @@ export default {
             return error.response;
           }
         });
+
+        if (response.status === 401) {
+          this.forceLogout(this.pageName);
+        }
+
         if (response.data.success) {
           this.categories = response.data.data.categories;
-        }
-        if (response.status === 401) {
-          this.forceLogout();
+        } else {
+          this.$swal.fire(this.pageName, response.data.message, "error");
         }
       } catch (e) {
         console.log(e);

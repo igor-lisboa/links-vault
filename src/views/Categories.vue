@@ -113,38 +113,38 @@ export default {
       await this.loadCategories();
     },
     async deleteCategory(category) {
-      this.$swal
-        .fire({
-          title: this.pageName,
-          text: `Tem certeza que deseja excluir a categoria ${category.name}?`,
-          showCancelButton: true,
-          confirmButtonText: "Sim",
-          cancelButtonText: "Cancelar",
-          icon: "warning",
-        })
-        .then(async (result) => {
-          if (result.isConfirmed) {
-            const response = await apiCategory
-              .delete(category.id)
-              .catch(function (error) {
-                if (error.response) {
-                  return error.response;
-                }
-              });
+      this.$swal.fire({
+        title: this.pageName,
+        text: `Tem certeza que deseja excluir a categoria ${category.name}?`,
+        footer: '<small class="text-muted">Se houverem links vinculados a essa categoria, eles também serão excluídos...</a>',
+        showCancelButton: true,
+        confirmButtonText: "Sim",
+        cancelButtonText: "Cancelar",
+        icon: "warning",
+        preConfirm: async () => {
+          const response = await apiCategory
+            .delete(category.id)
+            .catch(function (error) {
+              if (error.response) {
+                return error.response;
+              }
+            });
 
-            if (response.status === 401) {
-              this.forceLogout(this.pageName);
-            }
-
-            this.$swal.fire(
-              this.pageName,
-              response.data.message,
-              response.data.success ? "success" : "error"
-            );
-
-            await this.loadCategories();
+          if (response.status === 401) {
+            this.forceLogout(this.pageName);
           }
-        });
+
+          this.$swal.fire(
+            this.pageName,
+            response.data.message,
+            response.data.success ? "success" : "error"
+          );
+
+          await this.loadCategories();
+        },
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !this.$swal.isLoading(),
+      });
     },
     async loadCategories() {
       try {

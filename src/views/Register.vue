@@ -56,6 +56,10 @@
               <span class="sr-only">Loading...</span>
             </div>
           </button>
+          <router-link :to="{ name: 'login' }">
+            <i class="fa fa-arrow-circle-left"></i>
+            Já possuo um cadastro, quero me logar!
+          </router-link>
         </form>
       </div>
     </div>

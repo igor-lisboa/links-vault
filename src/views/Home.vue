@@ -103,6 +103,15 @@
               </option>
             </select>
           </div>
+          <div class="form-group">
+            <label for="name">Nome para o link</label>
+            <input
+              type="text"
+              id="name"
+              class="form-control"
+              v-model="link.name"
+            />
+          </div>
           <hr class="mb-4" />
           <button
             v-if="!loading"
@@ -152,7 +161,7 @@ export default {
       try {
         this.loading = true;
         const response = await apiLinks
-          .store(this.link.category, this.link.link)
+          .store(this.link.category, this.link.link, this.link.name)
           .catch(function (error) {
             if (error.response) {
               return error.response;

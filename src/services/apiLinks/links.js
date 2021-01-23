@@ -1,10 +1,11 @@
 import getApi from './index';
 
 export default {
-    store(categoryId, link) {
+    store(categoryId, link, name = null) {
         return getApi().post('/links', {
             category_id: categoryId,
-            link
+            link,
+            name
         })
     },
     delete(linkId) {

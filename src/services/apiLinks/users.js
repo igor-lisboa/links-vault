@@ -7,6 +7,12 @@ export default {
             password
         })
     },
+    update(email, password) {
+        return getApi().post('/users/update', {
+            email,
+            password
+        })
+    },
     register(email, password) {
         return getApi().post('/users/register', {
             email,

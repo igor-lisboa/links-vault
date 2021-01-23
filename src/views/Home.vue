@@ -61,7 +61,20 @@
       </template>
 
       <template #default>
-        <form @submit.prevent="saveLink">
+        <h5
+          v-if="categoriesLinks.length === 0"
+          class="text-danger text-center m-auto"
+        >
+          Por favor, cadastre ao menos uma categoria antes de adicionar seu
+          primeiro link.
+          <hr class="mb-4" />
+          <small class="text-muted">
+            <router-link :to="{ name: 'categories' }">
+              Cique aqui para cadastrar uma categoria
+            </router-link>
+          </small>
+        </h5>
+        <form v-else @submit.prevent="saveLink">
           <div class="form-group">
             <label for="link">Link</label>
             <input
@@ -115,7 +128,9 @@
 </template>
 <script>
 import apiCategory from "@/services/apiLinks/categories.js";
+import apiLinks from "@/services/apiLinks/links.js";
 import mixinForceLogout from "@/mixins/forceLogout.js";
+
 export default {
   mixins: [mixinForceLogout],
   data() {
@@ -134,11 +149,36 @@ export default {
       this.$root.$emit("bv::hide::modal", "modal-add-link", "#btnClose");
     },
     async saveLink() {
-      console.log(this.link);
-      this.loading = true;
-      this.hideModalAddLink();
-      this.loading = false;
-      this.link = {};
+      try {
+        this.loading = true;
+        const response = await apiLinks
+          .store(this.link.category, this.link.link)
+          .catch(function (error) {
+            if (error.response) {
+              return error.response;
+            }
+          });
+
+        if (response.status === 401) {
+          this.forceLogout(this.pageName);
+        }
+
+        if (response.data.success) {
+          this.link = {};
+          this.hideModalAddLink();
+          this.loading = false;
+        }
+
+        this.$swal.fire(
+          this.pageName,
+          response.data.message,
+          response.data.success ? "success" : "error"
+        );
+
+        await this.getCategoryLinks();
+      } catch (e) {
+        console.log(e);
+      }
     },
     async getCategoryLinks() {
       this.loading = true;

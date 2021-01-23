@@ -66,46 +66,44 @@ import apiUser from "@/services/apiLinks/users.js";
 export default {
   methods: {
     logout() {
-      this.$swal
-        .fire({
-          title: "Logout",
-          text: "Tem certeza que deseja realizar o logout?",
-          showCancelButton: true,
-          confirmButtonText: "Sim",
-          cancelButtonText: "Cancelar",
-          icon: "warning",
-        })
-        .then(async (result) => {
-          if (result.isConfirmed) {
-            try {
-              const response = await apiUser.logout().catch(function (error) {
-                if (error.response) {
-                  return error.response;
+      this.$swal.fire({
+        title: "Logout",
+        text: "Tem certeza que deseja realizar o logout?",
+        showCancelButton: true,
+        confirmButtonText: "Sim",
+        cancelButtonText: "Cancelar",
+        icon: "warning",
+        preConfirm: async () => {
+          try {
+            const response = await apiUser.logout().catch(function (error) {
+              if (error.response) {
+                return error.response;
+              }
+            });
+            this.$store
+              .dispatch("logout")
+              .then(() => {
+                this.$swal.fire(
+                  "Logout",
+                  response.data.success
+                    ? response.data.message
+                    : "Logout realizado com sucesso.",
+                  "success"
+                );
+                this.$router.push({ name: "login" });
+              })
+              .catch((err) => {
+                if (err) {
+                  throw err;
                 }
               });
-              this.$store
-                .dispatch("logout")
-                .then(() => {
-                  this.$swal.fire(
-                    "Logout",
-                    response.data.success
-                      ? response.data.message
-                      : "Logout realizado com sucesso.",
-                    "success"
-                  );
-                  this.$router.push({ name: "login" });
-                })
-                .catch((err) => {
-                  if (err) {
-                    throw err;
-                  }
-                });
-            } catch (ex) {
-              console.log(ex);
-              this.$swal.fire("Logout", "Falha ao realizar logout", "error");
-            }
+          } catch (ex) {
+            console.log(ex);
           }
-        });
+        },
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !this.$swal.isLoading(),
+      });
     },
   },
 };

@@ -34,6 +34,13 @@
         </b-card>
       </div>
     </div>
+    <button
+      class="btn btn-primary btn-lg mr-3 mb-5"
+      style="position: fixed; bottom: 0; right: 0"
+    >
+      <i class="fa fa-plus"></i>
+      Link
+    </button>
   </div>
 </template>
 <script>

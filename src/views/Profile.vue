@@ -26,7 +26,9 @@
               autocomplete
               v-model="user.password"
             />
-            <small class="text-muted">Caso não queira atualizar sua senha, deixe em branco.</small>
+            <small class="text-muted"
+              >Caso não queira atualizar sua senha, deixe em branco.</small
+            >
           </div>
           <div class="form-group">
             <label for="confirm-senha">Confirmação de Senha</label>
@@ -83,7 +85,8 @@ export default {
       try {
         if (
           this.user.password !== this.user.passwordConfirm &&
-          this.user.passwordConfirm !== undefined
+          this.user.passwordConfirm !== undefined &&
+          this.user.password !== undefined
         ) {
           this.$swal.fire(
             this.pageName,

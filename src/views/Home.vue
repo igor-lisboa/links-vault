@@ -31,7 +31,8 @@
           >
             <b-card-body>
               <div v-for="link in category.links" :key="link.id">
-                {{ link.id }}
+                <a :href="link.link">{{ link.name ? link.name : link.link }}</a>
+                
               </div>
             </b-card-body>
           </b-collapse>

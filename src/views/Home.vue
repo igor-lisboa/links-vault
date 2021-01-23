@@ -35,9 +35,24 @@
                 class="text-center text-muted"
                 >Cadastre links nessa categoria</small
               >
-              <div v-else v-for="link in category.links" :key="link.id">
-                <a target="_blank" :href="link.link">{{ link.name ? link.name : link.link }}</a>
-              </div>
+              <ul class="list-group mt-4" v-else>
+                <li
+                  v-for="link in category.links"
+                  :key="link.id"
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <a target="_blank" :href="link.link">
+                    {{ link.name ? link.name : link.link }}
+                  </a>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    @click="deleteLink(link)"
+                  >
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </li>
+              </ul>
             </b-card-body>
           </b-collapse>
         </b-card>
@@ -159,6 +174,41 @@ export default {
     await this.getCategoryLinks();
   },
   methods: {
+    async deleteLink(link) {
+      this.$swal.fire({
+        title: this.pageName,
+        text: `Tem certeza que deseja excluir o link ${
+          link.name ? link.name : link.link
+        }?`,
+        showCancelButton: true,
+        confirmButtonText: "Sim",
+        cancelButtonText: "Cancelar",
+        icon: "warning",
+        preConfirm: async () => {
+          const response = await apiLinks
+            .delete(link.id)
+            .catch(function (error) {
+              if (error.response) {
+                return error.response;
+              }
+            });
+
+          if (response.status === 401) {
+            this.forceLogout(this.pageName);
+          }
+
+          this.$swal.fire(
+            this.pageName,
+            response.data.message,
+            response.data.success ? "success" : "error"
+          );
+
+          await this.getCategoryLinks();
+        },
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !this.$swal.isLoading(),
+      });
+    },
     hideModalAddLink() {
       this.$root.$emit("bv::hide::modal", "modal-add-link", "#btnClose");
     },

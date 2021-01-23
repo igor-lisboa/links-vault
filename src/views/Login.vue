@@ -27,8 +27,22 @@
               v-model="user.password"
             />
           </div>
-          <button type="submit" class="btn btn-primary btn-block">
+          <button
+            v-if="!loading"
+            type="submit"
+            class="btn btn-primary btn-block"
+          >
             Entrar
+          </button>
+          <button
+            v-else
+            type="submit"
+            disabled
+            class="btn btn-primary btn-block"
+          >
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
           </button>
           <router-link :to="{ name: 'register' }">
             Não possui um cadastro, cadastre-se aqui!
@@ -45,11 +59,13 @@ export default {
   data() {
     return {
       user: {},
+      loading: false,
     };
   },
   methods: {
     async login() {
       try {
+        this.loading = true;
         const response = await apiUser.login(
           this.user.email,
           this.user.password
@@ -68,6 +84,8 @@ export default {
         if (e) {
           this.$swal.fire("Login", "Credenciais inválidas", "error");
         }
+      } finally {
+        this.loading = false;
       }
     },
   },

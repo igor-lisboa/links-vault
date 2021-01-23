@@ -3,8 +3,8 @@
     <div class="row h-100 justify-content-center align-items-center">
       <div class="col-md-6">
         <h1>{{ pageName }}</h1>
-        <small class="text-muted">Informe seu e-mail e uma senha</small>
-        <form @submit.prevent="register" class="mt-4">
+        <small class="text-muted">Atualize seu e-mail ou senha</small>
+        <form @submit.prevent="update" class="mt-4">
           <div class="form-group">
             <label for="email">E-mail</label>
             <input
@@ -18,15 +18,15 @@
             />
           </div>
           <div class="form-group">
-            <label for="senha">Senha</label>
+            <label for="senha">Nova Senha</label>
             <input
               id="senha"
               type="password"
               class="form-control"
               autocomplete
-              required
               v-model="user.password"
             />
+            <small class="text-muted">Caso não queira atualizar sua senha, deixe em branco.</small>
           </div>
           <div class="form-group">
             <label for="confirm-senha">Confirmação de Senha</label>
@@ -35,7 +35,6 @@
               type="password"
               class="form-control"
               autocomplete
-              required
               v-model="user.passwordConfirm"
             />
           </div>
@@ -56,10 +55,6 @@
               <span class="sr-only">Loading...</span>
             </div>
           </button>
-          <router-link :to="{ name: 'login' }">
-            <i class="fa fa-arrow-circle-left"></i>
-            Já possuo um cadastro, quero me logar!
-          </router-link>
         </form>
       </div>
     </div>
@@ -67,18 +62,29 @@
 </template>
 <script>
 import apiUser from "@/services/apiLinks/users.js";
+import mixinForceLogout from "@/mixins/forceLogout.js";
 export default {
+  mixins: [mixinForceLogout],
   data() {
     return {
       user: {},
-      pageName: "Registre-se",
+      pageName: "Seus Dados",
       loading: false,
     };
   },
+  created() {
+    this.getStoredUser();
+  },
   methods: {
-    async register() {
+    getStoredUser() {
+      this.user = this.$store.state.user;
+    },
+    async update() {
       try {
-        if (this.user.password !== this.user.passwordConfirm) {
+        if (
+          this.user.password !== this.user.passwordConfirm &&
+          this.user.passwordConfirm !== undefined
+        ) {
           this.$swal.fire(
             this.pageName,
             "A senha e a confirmação da senha não coincidem.",
@@ -86,30 +92,26 @@ export default {
           );
         } else {
           this.loading = true;
-          const response = await apiUser.register(
-            this.user.email,
-            this.user.password
-          );
-          if (response.data.success) {
-            this.$store
-              .dispatch("login", response.data.data.user, this.user.password)
-              .then(() => {
-                this.$swal.fire(this.pageName, "Seja bem vindo!", "success");
-                this.$router.push({ name: "home" });
-              })
-              .catch((err) => {
-                if (err) {
-                  throw err;
-                }
-              });
-          } else {
-            this.$swal.fire(this.pageName, response.data.message, "error");
+          const response = await apiUser
+            .update(this.user.email, this.user.password)
+            .catch(function (error) {
+              if (error.response) {
+                return error.response;
+              }
+            });
+
+          if (response.status === 401) {
+            this.forceLogout(this.pageName);
           }
+
+          this.$swal.fire(
+            this.pageName,
+            response.data.message,
+            response.data.success ? "success" : "error"
+          );
         }
       } catch (e) {
-        if (e) {
-          this.$swal.fire(this.pageName, "Credenciais inválidas", "error");
-        }
+        console.log(e);
       } finally {
         this.loading = false;
       }

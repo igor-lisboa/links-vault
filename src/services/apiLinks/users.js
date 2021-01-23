@@ -7,11 +7,19 @@ export default {
             password
         })
     },
-    update(email, password) {
-        return getApi().post('/users/update', {
-            email,
-            password
-        })
+    update(email, password = null) {
+        let data = {}
+        if (password === null || password === undefined || password === "") {
+            data = {
+                email
+            }
+        } else {
+            data = {
+                email,
+                password
+            }
+        }
+        return getApi().post('/users/update', data)
     },
     register(email, password) {
         return getApi().post('/users/register', {

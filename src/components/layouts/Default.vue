@@ -34,11 +34,14 @@
               <template #button-content>
                 <em>{{ $store.state.user.email }}</em>
               </template>
-              <b-dropdown-item href="#">Seus Dados</b-dropdown-item>
-              <div class="dropdown-divider"></div>
-              <b-dropdown-item href="#" @click.prevent="logout">
-                Sair
+              <b-dropdown-item
+                :active="$route.name === 'profile'"
+                :to="{ name: 'profile' }"
+              >
+                Seus Dados
               </b-dropdown-item>
+              <div class="dropdown-divider"></div>
+              <b-dropdown-item @click.prevent="logout"> Sair </b-dropdown-item>
             </b-nav-item-dropdown>
             <b-nav-item
               :active="$route.name === 'login'"

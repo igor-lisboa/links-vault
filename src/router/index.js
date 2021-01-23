@@ -41,6 +41,14 @@ const routes = [
     }
   },
   {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('../views/Profile.vue'),
+    meta: {
+      middleware: ['auth']
+    }
+  },
+  {
     path: '*',
     redirect: { name: 'home' },
     meta: {

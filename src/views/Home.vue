@@ -11,7 +11,7 @@
           <span class="sr-only">Loading...</span>
         </div>
       </div>
-      <div class="accordion" role="tablist" v-else>
+      <div class="accordion mt-3" role="tablist" v-else>
         <b-card
           v-for="(category, index) in categoriesLinks"
           :key="index"
@@ -46,31 +46,69 @@
       <i class="fa fa-plus"></i>
       Link
     </button>
-    <b-modal id="modal-add-link" title="Inclua novos links" scrollable centered>
+    <b-modal
+      id="modal-add-link"
+      title="Inclua novos links"
+      scrollable
+      centered
+      hide-footer
+    >
       <template #modal-header="{ close }">
-        <!-- Emulate built in modal header close button action -->
-        <b-button size="sm" variant="outline-danger" @click="close()">
-          Close Modal
-        </b-button>
-        <h5>Modal Header</h5>
+        <h5 class="m-auto">Novo Link</h5>
+        <button class="btn btn-light" @click="close()" ref="btnClose">
+          <i class="fa fa-times"></i>
+        </button>
       </template>
 
-      <template #default="{ hide }">
-        <p>Modal Body with button</p>
-        <b-button @click="hide()">Hide Modal</b-button>
-      </template>
-
-      <template #modal-footer="{ ok, cancel, hide }">
-        <b>Custom Footer</b>
-        <!-- Emulate built in modal footer ok and cancel button actions -->
-        <b-button size="sm" variant="success" @click="ok()"> OK </b-button>
-        <b-button size="sm" variant="danger" @click="cancel()">
-          Cancel
-        </b-button>
-        <!-- Button with custom close trigger value -->
-        <b-button size="sm" variant="outline-secondary" @click="hide('forget')">
-          Forget it
-        </b-button>
+      <template #default>
+        <form @submit.prevent="saveLink">
+          <div class="form-group">
+            <label for="link">Link</label>
+            <input
+              type="url"
+              id="link"
+              class="form-control"
+              v-model="link.link"
+              autofocus
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="category">Categoria</label>
+            <select
+              v-model="link.category"
+              id="category"
+              class="form-control"
+              required
+            >
+              <option
+                v-for="category in categoriesLinks"
+                :key="category.id"
+                :value="category.id"
+              >
+                {{ category.name }}
+              </option>
+            </select>
+          </div>
+          <hr class="mb-4" />
+          <button
+            v-if="!loading"
+            type="submit"
+            class="btn btn-success btn-block"
+          >
+            <i class="fa fa-check"></i>
+          </button>
+          <button
+            v-else
+            type="submit"
+            disabled
+            class="btn btn-primary btn-block"
+          >
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </button>
+        </form>
       </template>
     </b-modal>
   </div>
@@ -83,7 +121,8 @@ export default {
   data() {
     return {
       loading: false,
-      categoriesLinks: {},
+      categoriesLinks: [],
+      link: {},
       pageName: "Home",
     };
   },
@@ -91,6 +130,16 @@ export default {
     await this.getCategoryLinks();
   },
   methods: {
+    hideModalAddLink() {
+      this.$root.$emit("bv::hide::modal", "modal-add-link", "#btnClose");
+    },
+    async saveLink() {
+      console.log(this.link);
+      this.loading = true;
+      this.hideModalAddLink();
+      this.loading = false;
+      this.link = {};
+    },
     async getCategoryLinks() {
       this.loading = true;
       const response = await apiCategory.links().catch(function (error) {

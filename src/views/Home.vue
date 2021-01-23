@@ -30,9 +30,13 @@
             role="tabpanel"
           >
             <b-card-body>
-              <div v-for="link in category.links" :key="link.id">
-                <a :href="link.link">{{ link.name ? link.name : link.link }}</a>
-                
+              <small
+                v-if="category.links.length === 0"
+                class="text-center text-muted"
+                >Cadastre links nessa categoria</small
+              >
+              <div v-else v-for="link in category.links" :key="link.id">
+                <a target="_blank" :href="link.link">{{ link.name ? link.name : link.link }}</a>
               </div>
             </b-card-body>
           </b-collapse>

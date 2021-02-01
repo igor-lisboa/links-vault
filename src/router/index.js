@@ -69,8 +69,6 @@ const router = new VueRouter({
 })
 
 router.beforeEach((routeTo, routeFrom, next) => {
-  document.title = 'LINKS Vault | ' + routeTo.meta?.title
-
   const user_token = store.state?.user?.token
   const routeTo_middleware = routeTo.meta?.middleware ?? []
 
@@ -108,6 +106,10 @@ router.beforeEach((routeTo, routeFrom, next) => {
   } else {
     next()
   }
+})
+
+router.afterEach((routeTo) => {
+  document.title = 'LINKS Vault | ' + routeTo.meta?.title
 })
 
 

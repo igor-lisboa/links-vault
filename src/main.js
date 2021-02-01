@@ -12,7 +12,7 @@ import './registerServiceWorker'
 
 Vue.use(BootstrapVue)
 
-Vue.use(VueSweetalert2);
+Vue.use(VueSweetalert2)
 
 Vue.config.productionTip = process.env.NODE_ENV === 'production'
 

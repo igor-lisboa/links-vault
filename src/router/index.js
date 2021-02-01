@@ -13,7 +13,8 @@ const routes = [
     name: 'home',
     component: Home,
     meta: {
-      middleware: ['auth']
+      middleware: ['auth'],
+      title: 'Home'
     }
   },
   {
@@ -21,7 +22,8 @@ const routes = [
     name: 'register',
     component: () => import('../views/Register.vue'),
     meta: {
-      middleware: ['check_auth']
+      middleware: ['check_auth'],
+      title: 'Registro'
     }
   },
   {
@@ -29,7 +31,8 @@ const routes = [
     name: 'login',
     component: Login,
     meta: {
-      middleware: ['check_auth']
+      middleware: ['check_auth'],
+      title: 'Login'
     }
   },
   {
@@ -37,7 +40,8 @@ const routes = [
     name: 'categories',
     component: () => import('../views/Categories.vue'),
     meta: {
-      middleware: ['auth']
+      middleware: ['auth'],
+      title: 'Categorias'
     }
   },
   {
@@ -45,14 +49,16 @@ const routes = [
     name: 'profile',
     component: () => import('../views/Profile.vue'),
     meta: {
-      middleware: ['auth']
+      middleware: ['auth'],
+      title: 'Seus Dados'
     }
   },
   {
     path: '*',
     redirect: { name: 'home' },
     meta: {
-      middleware: ['check_auth']
+      middleware: ['check_auth'],
+      title: 'Não encontrado'
     }
   }
 ]
@@ -63,6 +69,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((routeTo, routeFrom, next) => {
+  document.title = 'LINKS Vault | ' + routeTo.meta?.title
+
   const user_token = store.state?.user?.token
   const routeTo_middleware = routeTo.meta?.middleware ?? []
 

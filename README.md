@@ -1,24 +1,11 @@
 # links-vault
 
-## Project setup
-```
-npm install
-```
+## Projeto de Teste para por em prática conhecimento adquirido com Vue.js
+* Essa aplicação basicamente salva e categoriza links para você.
+* Todo link precisa ter uma categoria.
+* Se quiser seus links podem ter um nome, para te ajudar a identificar o que tem naquele link
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Rodando localmente
+* Tenha o Node.js instalado em sua maquina.
+* Rode `npm install` para instalar as dependências.
+* Rode `npm start` para inicializar a aplicação.

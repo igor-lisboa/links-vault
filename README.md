@@ -4,6 +4,7 @@
 * Essa aplicação basicamente salva e categoriza links para você.
 * Todo link precisa ter uma categoria.
 * Se quiser seus links podem ter um nome, para te ajudar a identificar o que tem naquele link
+* Essa aplicação usa a api https://github.com/igor-lisboa/links-adm
 
 ## Rodando localmente
 * Tenha o Node.js instalado em sua maquina.
